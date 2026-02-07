@@ -70,6 +70,7 @@ create table public.shared_files (
   uploaded_by text not null check (uploaded_by in ('provider', 'client')),
   file_name text not null,
   file_url text not null,
+  storage_path text not null,
   file_size bigint not null default 0,
   created_at timestamptz not null default now()
 );
@@ -265,6 +266,10 @@ create policy "Anyone can upload files"
 create policy "Anyone can view files"
   on storage.objects for select
   using (bucket_id = 'client-files');
+
+create policy "Authenticated users can delete files"
+  on storage.objects for delete
+  using (bucket_id = 'client-files' and auth.role() = 'authenticated');
 
 -- Indexes for performance
 create index idx_clients_provider on public.clients(provider_id);

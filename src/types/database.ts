@@ -24,6 +24,7 @@ export interface SharedFile {
   uploaded_by: 'provider' | 'client';
   file_name: string;
   file_url: string;
+  storage_path: string;
   file_size: number;
   created_at: string;
 }

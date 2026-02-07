@@ -227,6 +227,7 @@ function FilesTab({
         uploaded_by: 'provider',
         file_name: file.name,
         file_url: publicUrl,
+        storage_path: filePath,
         file_size: file.size,
       });
 
@@ -246,6 +247,18 @@ function FilesTab({
     setDeleting(fileId);
 
     const supabase = createClient();
+
+    // Fetch the storage path so we can remove the file from the bucket
+    const { data: fileRecord } = await supabase
+      .from('shared_files')
+      .select('storage_path')
+      .eq('id', fileId)
+      .single();
+
+    if (fileRecord?.storage_path) {
+      await supabase.storage.from('client-files').remove([fileRecord.storage_path]);
+    }
+
     await supabase.from('shared_files').delete().eq('id', fileId);
 
     await supabase.from('activities').insert({

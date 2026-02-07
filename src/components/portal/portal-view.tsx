@@ -289,6 +289,7 @@ function PortalFilesTab({
         uploaded_by: 'client',
         file_name: file.name,
         file_url: publicUrl,
+        storage_path: filePath,
         file_size: file.size,
       });
 
