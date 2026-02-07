@@ -17,10 +17,11 @@ Prioritized list of improvements for ClientDrop, organized by impact and effort.
 - Add Supabase Realtime subscriptions on `messages`, `shared_files`, and `activities` tables
 - Messages tab should feel like a live chat, not a form submission
 
-### 3. File Delete from Storage
-- The delete button currently removes the database record but leaves the file in the Supabase Storage bucket
-- Add `supabase.storage.from('client-files').remove([filePath])` before deleting the DB row
-- Requires storing the storage path (not just the public URL) in `shared_files`
+### ~~3. File Delete from Storage~~ DONE
+- ~~The delete button currently removes the database record but leaves the file in the Supabase Storage bucket~~
+- ~~Add `supabase.storage.from('client-files').remove([filePath])` before deleting the DB row~~
+- ~~Requires storing the storage path (not just the public URL) in `shared_files`~~
+- Completed: added `storage_path` column, save it on upload (provider + client), fetch + remove from bucket on delete, added storage RLS delete policy
 
 ### 4. Bulk File Upload
 - Allow dragging multiple files at once instead of one-at-a-time uploads
