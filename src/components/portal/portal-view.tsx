@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
+import { useRealtimeTable } from '@/hooks/use-realtime';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -264,6 +265,15 @@ function PortalFilesTab({
   files: Record<string, string | number>[];
   token: string;
 }) {
+  const liveFiles = useRealtimeTable({
+    table: 'shared_files',
+    filterColumn: 'client_id',
+    filterValue: clientId,
+    initialData: files as (Record<string, string | number> & { id: string; created_at: string })[],
+    events: ['INSERT', 'DELETE'],
+    orderDirection: 'desc',
+  });
+
   const [uploading, setUploading] = useState(false);
   const router = useRouter();
 
@@ -317,11 +327,11 @@ function PortalFilesTab({
         </label>
       </div>
 
-      {files.length === 0 ? (
+      {liveFiles.length === 0 ? (
         <EmptyState icon={FileText} title="No files yet" description="Files shared with you will appear here." />
       ) : (
         <div className="space-y-2">
-          {files.map((file) => (
+          {liveFiles.map((file) => (
             <Card key={file.id as string} className="p-4">
               <div className="flex items-center gap-3">
                 <FileText className="w-5 h-5 text-muted shrink-0" />
@@ -358,9 +368,23 @@ function PortalMessagesTab({
   clientId: string;
   messages: Record<string, string>[];
 }) {
+  const liveMessages = useRealtimeTable({
+    table: 'messages',
+    filterColumn: 'client_id',
+    filterValue: clientId,
+    initialData: messages as (Record<string, string> & { id: string; created_at: string })[],
+    events: ['INSERT'],
+    orderDirection: 'asc',
+  });
+
   const [content, setContent] = useState('');
   const [sending, setSending] = useState(false);
   const router = useRouter();
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [liveMessages.length]);
 
   const sendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -391,10 +415,10 @@ function PortalMessagesTab({
 
       <div className="border border-border rounded-xl bg-card overflow-hidden">
         <div className="max-h-[500px] overflow-y-auto p-4 space-y-4">
-          {messages.length === 0 ? (
+          {liveMessages.length === 0 ? (
             <p className="text-sm text-muted text-center py-8">No messages yet.</p>
           ) : (
-            messages.map((msg) => (
+            liveMessages.map((msg) => (
               <div
                 key={msg.id}
                 className={`flex ${msg.sender === 'client' ? 'justify-end' : 'justify-start'}`}
@@ -414,6 +438,7 @@ function PortalMessagesTab({
               </div>
             ))
           )}
+          <div ref={messagesEndRef} />
         </div>
 
         <form onSubmit={sendMessage} className="border-t border-border p-3 flex gap-2">

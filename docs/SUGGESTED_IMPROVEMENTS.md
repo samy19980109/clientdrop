@@ -12,10 +12,8 @@ Prioritized list of improvements for ClientDrop, organized by impact and effort.
 - Use Supabase Edge Functions + Resend/Postmark for transactional email
 - Add a `notification_preferences` JSONB column to `profiles` so providers can toggle what they receive
 
-### 2. Real-Time Updates
-- Currently the app requires manual page refresh to see new messages/files
-- Add Supabase Realtime subscriptions on `messages`, `shared_files`, and `activities` tables
-- Messages tab should feel like a live chat, not a form submission
+### 2. ~~Real-Time Updates~~ DONE
+> Implemented: created `useRealtimeTable` hook in `src/hooks/use-realtime.ts`. Added live subscriptions to MessagesTab, FilesTab, ActivityTab (dashboard) and PortalMessagesTab, PortalFilesTab (portal). Messages auto-scroll on new arrivals. Requires enabling Supabase Realtime publication on `messages`, `shared_files`, and `activities` tables.
 
 ### 3. ~~File Delete from Storage~~ DONE
 > Implemented: added `storage_path` column to `shared_files`, saved on upload (provider + client), fetch + remove from storage bucket on delete, added RLS delete policy on `storage.objects`.

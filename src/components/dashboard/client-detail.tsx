@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
+import { useRealtimeTable } from '@/hooks/use-realtime';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardTitle } from '@/components/ui/card';
@@ -149,7 +150,7 @@ export function ClientDetail({
         <PaymentsTab clientId={client.id} paymentLinks={paymentLinks} />
       )}
       {activeTab === 'activity' && (
-        <ActivityTab activities={activities} />
+        <ActivityTab clientId={client.id} activities={activities} />
       )}
     </div>
   );
@@ -201,6 +202,15 @@ function FilesTab({
   clientId: string;
   files: Record<string, string | number>[];
 }) {
+  const liveFiles = useRealtimeTable({
+    table: 'shared_files',
+    filterColumn: 'client_id',
+    filterValue: clientId,
+    initialData: files as (Record<string, string | number> & { id: string; created_at: string })[],
+    events: ['INSERT', 'DELETE'],
+    orderDirection: 'desc',
+  });
+
   const [uploading, setUploading] = useState(false);
   const [deleting, setDeleting] = useState<string | null>(null);
   const router = useRouter();
@@ -284,7 +294,7 @@ function FilesTab({
         </label>
       </div>
 
-      {files.length === 0 ? (
+      {liveFiles.length === 0 ? (
         <EmptyState
           icon={FileText}
           title="No files yet"
@@ -292,7 +302,7 @@ function FilesTab({
         />
       ) : (
         <div className="space-y-2">
-          {files.map((file) => (
+          {liveFiles.map((file) => (
             <div
               key={file.id as string}
               className="flex items-center gap-3 p-3 rounded-lg border border-border bg-card"
@@ -342,9 +352,23 @@ function MessagesTab({
   clientId: string;
   messages: Record<string, string>[];
 }) {
+  const liveMessages = useRealtimeTable({
+    table: 'messages',
+    filterColumn: 'client_id',
+    filterValue: clientId,
+    initialData: messages as (Record<string, string> & { id: string; created_at: string })[],
+    events: ['INSERT'],
+    orderDirection: 'asc',
+  });
+
   const [content, setContent] = useState('');
   const [sending, setSending] = useState(false);
   const router = useRouter();
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [liveMessages.length]);
 
   const sendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -376,12 +400,12 @@ function MessagesTab({
       <div className="border border-border rounded-xl bg-card overflow-hidden">
         {/* Message list */}
         <div className="max-h-96 overflow-y-auto p-4 space-y-4">
-          {messages.length === 0 ? (
+          {liveMessages.length === 0 ? (
             <p className="text-sm text-muted text-center py-8">
               No messages yet. Start the conversation.
             </p>
           ) : (
-            messages.map((msg) => (
+            liveMessages.map((msg) => (
               <div
                 key={msg.id}
                 className={`flex ${msg.sender === 'provider' ? 'justify-end' : 'justify-start'}`}
@@ -405,6 +429,7 @@ function MessagesTab({
               </div>
             ))
           )}
+          <div ref={messagesEndRef} />
         </div>
 
         {/* Input */}
@@ -730,15 +755,26 @@ function PaymentsTab({
 
 // --- Activity Tab ---
 function ActivityTab({
+  clientId,
   activities,
 }: {
+  clientId: string;
   activities: Record<string, string | null>[];
 }) {
+  const liveActivities = useRealtimeTable({
+    table: 'activities',
+    filterColumn: 'client_id',
+    filterValue: clientId,
+    initialData: activities as (Record<string, string | null> & { id: string; created_at: string })[],
+    events: ['INSERT'],
+    orderDirection: 'desc',
+  });
+
   return (
     <div>
       <h2 className="font-semibold text-foreground mb-4">Activity Timeline</h2>
 
-      {activities.length === 0 ? (
+      {liveActivities.length === 0 ? (
         <EmptyState
           icon={Clock}
           title="No activity yet"
@@ -746,11 +782,11 @@ function ActivityTab({
         />
       ) : (
         <div className="space-y-0">
-          {activities.map((activity, i) => (
+          {liveActivities.map((activity, i) => (
             <div key={activity.id as string} className="flex gap-4">
               <div className="flex flex-col items-center">
                 <div className="w-2.5 h-2.5 bg-accent rounded-full mt-1.5" />
-                {i < activities.length - 1 && (
+                {i < liveActivities.length - 1 && (
                   <div className="w-px flex-1 bg-border" />
                 )}
               </div>
