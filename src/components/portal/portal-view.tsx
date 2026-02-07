@@ -309,10 +309,10 @@ function PortalFilesTab({
         <h2 className="text-xl font-bold text-foreground">Files</h2>
         <label className="cursor-pointer">
           <input type="file" className="hidden" onChange={handleUpload} disabled={uploading} />
-          <Button variant="secondary" size="sm" loading={uploading}>
+          <span className="inline-flex items-center justify-center rounded-lg font-medium text-sm px-3 py-1.5 bg-foreground/5 text-foreground hover:bg-foreground/10 border border-border transition-colors">
             <Upload className="w-4 h-4 mr-2" />
-            Upload file
-          </Button>
+            {uploading ? 'Uploading...' : 'Upload file'}
+          </span>
         </label>
       </div>
 
@@ -525,15 +525,26 @@ function PortalDocumentsTab({
                         {item.completed && <Check className="w-3.5 h-3.5 text-white" />}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <div className={`text-sm font-medium ${item.completed ? 'text-muted line-through' : 'text-foreground'}`}>
+                        <div className={`text-sm font-medium ${item.completed ? 'text-muted' : 'text-foreground'}`}>
                           {item.label}
                         </div>
                         {item.file_name && (
                           <div className="text-xs text-success mt-0.5">{item.file_name}</div>
                         )}
                       </div>
-                      {!item.completed && (
-                        <label className="cursor-pointer shrink-0">
+                      <div className="flex items-center gap-2 shrink-0">
+                        {item.completed && item.file_url && (
+                          <a
+                            href={item.file_url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center justify-center rounded-lg font-medium text-sm px-3 py-1.5 text-accent hover:bg-accent/10 transition-colors"
+                          >
+                            <Download className="w-3.5 h-3.5 mr-1" />
+                            Download
+                          </a>
+                        )}
+                        <label className="cursor-pointer">
                           <input
                             type="file"
                             className="hidden"
@@ -543,16 +554,12 @@ function PortalDocumentsTab({
                             }}
                             disabled={uploadingItem === item.id}
                           />
-                          <Button
-                            variant="secondary"
-                            size="sm"
-                            loading={uploadingItem === item.id}
-                          >
+                          <span className="inline-flex items-center justify-center rounded-lg font-medium text-sm px-3 py-1.5 bg-foreground/5 text-foreground hover:bg-foreground/10 border border-border transition-colors">
                             <Upload className="w-3.5 h-3.5 mr-1" />
-                            Upload
-                          </Button>
+                            {uploadingItem === item.id ? 'Uploading...' : item.completed ? 'Replace' : 'Upload'}
+                          </span>
                         </label>
-                      )}
+                      </div>
                     </div>
                   ))}
                 </div>

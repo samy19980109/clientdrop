@@ -23,6 +23,7 @@ import {
   Link2,
   Copy,
   Check,
+  Download,
   Trash2,
   X,
 } from 'lucide-react';
@@ -34,7 +35,7 @@ interface ClientDetailProps {
   client: Record<string, string>;
   files: Record<string, string | number>[];
   messages: Record<string, string>[];
-  documentRequests: Record<string, string | { id: string; label: string; completed: boolean; file_name: string | null }[]>[];
+  documentRequests: Record<string, string | { id: string; label: string; completed: boolean; file_url: string | null; file_name: string | null }[]>[];
   paymentLinks: Record<string, string | number | null>[];
   activities: Record<string, string | null>[];
   portalUrl: string;
@@ -201,6 +202,7 @@ function FilesTab({
   files: Record<string, string | number>[];
 }) {
   const [uploading, setUploading] = useState(false);
+  const [deleting, setDeleting] = useState<string | null>(null);
   const router = useRouter();
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -237,6 +239,23 @@ function FilesTab({
       router.refresh();
     }
     setUploading(false);
+  };
+
+  const handleDelete = async (fileId: string, fileName: string) => {
+    if (!confirm(`Remove "${fileName}"? This cannot be undone.`)) return;
+    setDeleting(fileId);
+
+    const supabase = createClient();
+    await supabase.from('shared_files').delete().eq('id', fileId);
+
+    await supabase.from('activities').insert({
+      client_id: clientId,
+      actor: 'provider',
+      action: `Removed file "${fileName}"`,
+    });
+
+    setDeleting(null);
+    router.refresh();
   };
 
   return (
@@ -286,6 +305,14 @@ function FilesTab({
               >
                 Download
               </a>
+              <button
+                onClick={() => handleDelete(file.id as string, file.file_name as string)}
+                disabled={deleting === (file.id as string)}
+                className="p-1.5 text-muted hover:text-danger rounded-lg hover:bg-danger/10 transition-colors cursor-pointer disabled:opacity-50"
+                title="Remove file"
+              >
+                <Trash2 className="w-4 h-4" />
+              </button>
             </div>
           ))}
         </div>
@@ -391,7 +418,7 @@ function DocumentsTab({
   documentRequests,
 }: {
   clientId: string;
-  documentRequests: Record<string, string | { id: string; label: string; completed: boolean; file_name: string | null }[]>[];
+  documentRequests: Record<string, string | { id: string; label: string; completed: boolean; file_url: string | null; file_name: string | null }[]>[];
 }) {
   const [showForm, setShowForm] = useState(false);
   const [title, setTitle] = useState('');
@@ -515,7 +542,7 @@ function DocumentsTab({
       ) : (
         <div className="space-y-4">
           {documentRequests.map((req) => {
-            const reqItems = (req.items || []) as { id: string; label: string; completed: boolean; file_name: string | null }[];
+            const reqItems = (req.items || []) as { id: string; label: string; completed: boolean; file_url: string | null; file_name: string | null }[];
             const completed = reqItems.filter((i) => i.completed).length;
             return (
               <Card key={req.id as string} className="p-4">
@@ -544,8 +571,16 @@ function DocumentsTab({
                       >
                         {item.label}
                       </span>
-                      {item.file_name && (
-                        <span className="text-xs text-accent">({item.file_name})</span>
+                      {item.file_name && item.file_url && (
+                        <a
+                          href={item.file_url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 text-xs text-accent hover:underline shrink-0"
+                        >
+                          <Download className="w-3 h-3" />
+                          {item.file_name}
+                        </a>
                       )}
                     </div>
                   ))}
