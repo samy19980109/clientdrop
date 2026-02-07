@@ -12,7 +12,7 @@ import {
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background">
       {/* Nav */}
       <nav className="border-b border-border">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between">
@@ -69,8 +69,8 @@ export default function LandingPage() {
       {/* Portal Preview */}
       <section className="pb-20 px-4 sm:px-6">
         <div className="max-w-5xl mx-auto">
-          <div className="rounded-2xl border border-border bg-gray-50 p-3 sm:p-6 shadow-xl shadow-gray-100">
-            <div className="rounded-xl bg-white border border-border overflow-hidden">
+          <div className="rounded-2xl border border-border bg-background-secondary p-3 sm:p-6 shadow-xl shadow-background-secondary">
+            <div className="rounded-xl bg-card border border-border overflow-hidden">
               <div className="border-b border-border px-6 py-4 flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="w-8 h-8 bg-violet-500 rounded-lg" />
@@ -79,18 +79,18 @@ export default function LandingPage() {
                 <span className="text-sm text-muted">Welcome, Sarah</span>
               </div>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 p-6">
-                <div className="bg-gray-50 rounded-lg p-4 border border-border">
+                <div className="bg-background-secondary rounded-lg p-4 border border-border">
                   <div className="text-sm font-medium text-foreground mb-2">Project Status</div>
-                  <div className="inline-flex items-center px-2.5 py-1 rounded-full bg-amber-100 text-amber-700 text-xs font-medium">
+                  <div className="inline-flex items-center px-2.5 py-1 rounded-full bg-warning/10 text-warning text-xs font-medium">
                     In Review
                   </div>
                 </div>
-                <div className="bg-gray-50 rounded-lg p-4 border border-border">
+                <div className="bg-background-secondary rounded-lg p-4 border border-border">
                   <div className="text-sm font-medium text-foreground mb-2">Documents</div>
                   <div className="text-2xl font-bold text-foreground">3/5</div>
                   <div className="text-xs text-muted">uploaded</div>
                 </div>
-                <div className="bg-gray-50 rounded-lg p-4 border border-border">
+                <div className="bg-background-secondary rounded-lg p-4 border border-border">
                   <div className="text-sm font-medium text-foreground mb-2">Messages</div>
                   <div className="text-2xl font-bold text-foreground">2</div>
                   <div className="text-xs text-muted">unread</div>
@@ -102,7 +102,7 @@ export default function LandingPage() {
       </section>
 
       {/* Features */}
-      <section className="py-20 bg-gray-50 px-4 sm:px-6" id="features">
+      <section className="py-20 bg-background-secondary px-4 sm:px-6" id="features">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold text-foreground">
@@ -249,7 +249,7 @@ function FeatureCard({
   description: string;
 }) {
   return (
-    <div className="rounded-xl border border-border bg-white p-6 hover:shadow-md transition-shadow">
+    <div className="rounded-xl border border-border bg-card p-6 hover:shadow-md transition-shadow">
       <div className="w-10 h-10 bg-accent/10 rounded-lg flex items-center justify-center mb-4">
         <Icon className="w-5 h-5 text-accent" />
       </div>
@@ -277,7 +277,7 @@ function PricingCard({
       className={`rounded-xl border p-6 ${
         popular
           ? 'border-accent bg-accent/5 ring-1 ring-accent relative'
-          : 'border-border bg-white'
+          : 'border-border bg-card'
       }`}
     >
       {popular && (
@@ -308,7 +308,7 @@ function PricingCard({
         className={`block text-center w-full py-2.5 rounded-lg text-sm font-medium transition-colors ${
           popular
             ? 'bg-accent text-white hover:bg-accent/90'
-            : 'border border-border text-foreground hover:bg-gray-50'
+            : 'border border-border text-foreground hover:bg-foreground/5'
         }`}
       >
         Get started

@@ -2,6 +2,7 @@
 
 :root {
   --background: #ffffff;
+  --background-secondary: #f8fafc;
   --foreground: #0f172a;
   --muted: #64748b;
   --border: #e2e8f0;
@@ -10,10 +11,30 @@
   --success: #16a34a;
   --warning: #f59e0b;
   --danger: #dc2626;
+  --card: #ffffff;
+  --input: #ffffff;
+  --overlay: rgba(0, 0, 0, 0.2);
+}
+
+.dark {
+  --background: #09090b;
+  --background-secondary: #18181b;
+  --foreground: #fafafa;
+  --muted: #a1a1aa;
+  --border: #27272a;
+  --accent: #3b82f6;
+  --accent-light: #172554;
+  --success: #22c55e;
+  --warning: #eab308;
+  --danger: #ef4444;
+  --card: #18181b;
+  --input: #18181b;
+  --overlay: rgba(0, 0, 0, 0.5);
 }
 
 @theme inline {
   --color-background: var(--background);
+  --color-background-secondary: var(--background-secondary);
   --color-foreground: var(--foreground);
   --color-muted: var(--muted);
   --color-border: var(--border);
@@ -22,6 +43,9 @@
   --color-success: var(--success);
   --color-warning: var(--warning);
   --color-danger: var(--danger);
+  --color-card: var(--card);
+  --color-input: var(--input);
+  --color-overlay: var(--overlay);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
@@ -32,12 +56,10 @@ body {
   font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
 }
 
-/* Smooth scrolling */
 html {
   scroll-behavior: smooth;
 }
 
-/* Focus styles */
 *:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;

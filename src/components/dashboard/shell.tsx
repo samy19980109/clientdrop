@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
+import { ThemeToggle } from '@/components/ui/theme-toggle';
 import {
   LayoutDashboard,
   Users,
@@ -47,24 +48,27 @@ export function DashboardShell({ user, children }: DashboardShellProps) {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-background-secondary">
       {/* Mobile menu button */}
-      <div className="sm:hidden fixed top-0 left-0 right-0 z-50 bg-white border-b border-border px-4 py-3 flex items-center justify-between">
+      <div className="sm:hidden fixed top-0 left-0 right-0 z-50 bg-card border-b border-border px-4 py-3 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 bg-accent rounded-lg flex items-center justify-center">
             <span className="text-white font-bold text-sm">C</span>
           </div>
           <span className="font-semibold text-foreground">ClientDrop</span>
         </div>
-        <button onClick={() => setSidebarOpen(!sidebarOpen)} className="p-1 cursor-pointer">
-          {sidebarOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-        </button>
+        <div className="flex items-center gap-1">
+          <ThemeToggle />
+          <button onClick={() => setSidebarOpen(!sidebarOpen)} className="p-1 cursor-pointer">
+            {sidebarOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
+        </div>
       </div>
 
       {/* Sidebar */}
       <aside
         className={cn(
-          'fixed top-0 left-0 z-40 h-full w-64 bg-white border-r border-border flex flex-col transition-transform sm:translate-x-0',
+          'fixed top-0 left-0 z-40 h-full w-64 bg-card border-r border-border flex flex-col transition-transform sm:translate-x-0',
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
         )}
       >
@@ -101,21 +105,24 @@ export function DashboardShell({ user, children }: DashboardShellProps) {
           ))}
         </nav>
 
-        <div className="p-4 border-t border-border">
+        <div className="p-4 border-t border-border flex items-center justify-between">
           <button
             onClick={handleSignOut}
-            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-muted hover:bg-foreground/5 hover:text-foreground transition-colors w-full cursor-pointer"
+            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-muted hover:bg-foreground/5 hover:text-foreground transition-colors cursor-pointer"
           >
             <LogOut className="w-5 h-5" />
             Sign out
           </button>
+          <div className="hidden sm:block">
+            <ThemeToggle />
+          </div>
         </div>
       </aside>
 
       {/* Backdrop for mobile */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 z-30 bg-black/20 sm:hidden"
+          className="fixed inset-0 z-30 bg-overlay sm:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}

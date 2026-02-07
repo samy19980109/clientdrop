@@ -136,7 +136,7 @@ export function ClientsList({ clients: initialClients }: ClientsListProps) {
               placeholder="Search clients..."
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 rounded-lg border border-border text-sm focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
+              className="w-full pl-10 pr-4 py-2 rounded-lg border border-border bg-input text-foreground text-sm focus:border-accent focus:outline-none focus:ring-1 focus:ring-accent"
             />
           </div>
         </div>

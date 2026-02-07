@@ -138,7 +138,7 @@ export default async function DashboardPage() {
               <Link
                 key={client.id}
                 href={`/dashboard/clients/${client.id}`}
-                className="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors -mx-3"
+                className="flex items-center gap-3 p-3 rounded-lg hover:bg-foreground/5 transition-colors -mx-3"
               >
                 <Avatar name={client.name} size="sm" />
                 <div className="flex-1 min-w-0">

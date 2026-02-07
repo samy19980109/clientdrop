@@ -181,7 +181,7 @@ function StatusSelector({
     <select
       value={status}
       onChange={(e) => updateStatus(e.target.value)}
-      className="rounded-lg border border-border px-3 py-2 text-sm bg-white focus:border-accent focus:outline-none cursor-pointer"
+      className="rounded-lg border border-border px-3 py-2 text-sm bg-input text-foreground focus:border-accent focus:outline-none cursor-pointer"
     >
       {STATUS_OPTIONS.map((opt) => (
         <option key={opt} value={opt}>
@@ -263,7 +263,7 @@ function FilesTab({
           {files.map((file) => (
             <div
               key={file.id as string}
-              className="flex items-center gap-3 p-3 rounded-lg border border-border bg-white"
+              className="flex items-center gap-3 p-3 rounded-lg border border-border bg-card"
             >
               <div className="w-10 h-10 bg-accent/10 rounded-lg flex items-center justify-center shrink-0">
                 <FileText className="w-5 h-5 text-accent" />
@@ -333,7 +333,7 @@ function MessagesTab({
     <div>
       <h2 className="font-semibold text-foreground mb-4">Messages</h2>
 
-      <div className="border border-border rounded-xl bg-white overflow-hidden">
+      <div className="border border-border rounded-xl bg-card overflow-hidden">
         {/* Message list */}
         <div className="max-h-96 overflow-y-auto p-4 space-y-4">
           {messages.length === 0 ? (
@@ -350,7 +350,7 @@ function MessagesTab({
                   className={`max-w-[75%] rounded-2xl px-4 py-2.5 ${
                     msg.sender === 'provider'
                       ? 'bg-accent text-white rounded-br-md'
-                      : 'bg-gray-100 text-foreground rounded-bl-md'
+                      : 'bg-foreground/10 text-foreground rounded-bl-md'
                   }`}
                 >
                   <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
@@ -374,7 +374,7 @@ function MessagesTab({
             value={content}
             onChange={(e) => setContent(e.target.value)}
             placeholder="Type a message..."
-            className="flex-1 px-4 py-2 rounded-lg border border-border text-sm focus:border-accent focus:outline-none"
+            className="flex-1 px-4 py-2 rounded-lg border border-border bg-input text-foreground text-sm focus:border-accent focus:outline-none"
           />
           <Button type="submit" size="sm" loading={sending} disabled={!content.trim()}>
             <Send className="w-4 h-4" />
@@ -472,7 +472,7 @@ function DocumentsTab({
                       value={item}
                       onChange={(e) => updateItem(i, e.target.value)}
                       placeholder={`Document ${i + 1}`}
-                      className="flex-1 px-3 py-2 rounded-lg border border-border text-sm focus:border-accent focus:outline-none"
+                      className="flex-1 px-3 py-2 rounded-lg border border-border bg-input text-foreground text-sm focus:border-accent focus:outline-none"
                     />
                     {items.length > 1 && (
                       <button
